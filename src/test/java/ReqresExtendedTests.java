@@ -5,13 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import specs.Specifications;
 
+import static helpers.CustomApiListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Epic("API Reqres.in")
-@Feature("User Management")
 public class ReqresExtendedTests {
 
     @Test
@@ -19,6 +18,7 @@ public class ReqresExtendedTests {
     void getListUsersTest() {
         step("Выполняем GET запрос для получения списка пользователей", () -> {
             given().spec(Specifications.requestSpec)
+                    .filter(withCustomTemplates())
                     .when().get("/users?page=2")
                     .then().spec(Specifications.responseSpec(200))
                     .body("page", is(2));
@@ -33,6 +33,7 @@ public class ReqresExtendedTests {
         UserResponse response = step("Создание пользователя ivan/qa", () ->
                 given().spec(Specifications.requestSpec)
                         .body(user)
+                        .filter(withCustomTemplates())
                         .when().post("/users")
                         .then().spec(Specifications.responseSpec(201))
                         .extract().as(UserResponse.class)
@@ -48,6 +49,7 @@ public class ReqresExtendedTests {
     void getSingleUserTest() {
         step("Запрос данных пользователя с ID 2", () -> {
             given().spec(Specifications.requestSpec)
+                    .filter(withCustomTemplates())
                     .when().get("/users/2")
                     .then().spec(Specifications.responseSpec(200))
                     .body("data.id", is(2));
@@ -62,6 +64,7 @@ public class ReqresExtendedTests {
         UserResponse response = step("Обновление пользователя ID 2", () ->
                 given().spec(Specifications.requestSpec)
                         .body(user)
+                        .filter(withCustomTemplates())
                         .when().put("/users/2")
                         .then().spec(Specifications.responseSpec(200))
                         .extract().as(UserResponse.class)
@@ -77,6 +80,7 @@ public class ReqresExtendedTests {
     void deleteUserTest() {
         step("Удаление пользователя с ID 2", () -> {
             given().spec(Specifications.requestSpec)
+                    .filter(withCustomTemplates())
                     .when().delete("/users/2")
                     .then().spec(Specifications.responseSpec(204));
         });
