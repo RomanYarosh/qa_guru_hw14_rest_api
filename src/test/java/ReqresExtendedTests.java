@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import specs.Specifications;
 
-import static helpers.CustomApiListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -17,10 +16,13 @@ public class ReqresExtendedTests {
     @DisplayName("Получение списка пользователей")
     void getListUsersTest() {
         step("Выполняем GET запрос для получения списка пользователей", () -> {
-            given().spec(Specifications.requestSpec)
-                    .filter(withCustomTemplates())
-                    .when().get("/users?page=2")
-                    .then().spec(Specifications.responseSpec(200))
+            given()
+                    .spec(Specifications.requestSpec())
+                    .queryParam("page", "2")
+            .when()
+                    .get("/users")
+            .then()
+                    .spec(Specifications.responseSpec(200))
                     .body("page", is(2));
         });
     }
@@ -28,15 +30,21 @@ public class ReqresExtendedTests {
     @Test
     @DisplayName("Создание нового пользователя")
     void createUserTest() {
-        UserRequest user = UserRequest.builder().name("ivan").job("qa").build();
+        UserRequest user = UserRequest.builder()
+                .name("ivan")
+                .job("qa")
+                .build();
 
         UserResponse response = step("Создание пользователя ivan/qa", () ->
-                given().spec(Specifications.requestSpec)
+                given()
+                        .spec(Specifications.requestSpec())
                         .body(user)
-                        .filter(withCustomTemplates())
-                        .when().post("/users")
-                        .then().spec(Specifications.responseSpec(201))
-                        .extract().as(UserResponse.class)
+                .when()
+                        .post("/users")
+                .then()
+                        .spec(Specifications.responseSpec(201))
+                        .extract()
+                        .as(UserResponse.class)
         );
 
         step("Сверка имени в ответе", () -> {
@@ -48,10 +56,12 @@ public class ReqresExtendedTests {
     @DisplayName("Получение данных одного пользователя")
     void getSingleUserTest() {
         step("Запрос данных пользователя с ID 2", () -> {
-            given().spec(Specifications.requestSpec)
-                    .filter(withCustomTemplates())
-                    .when().get("/users/2")
-                    .then().spec(Specifications.responseSpec(200))
+            given()
+                    .spec(Specifications.requestSpec())
+            .when()
+                    .get("/users/2")
+            .then()
+                    .spec(Specifications.responseSpec(200))
                     .body("data.id", is(2));
         });
     }
@@ -59,15 +69,20 @@ public class ReqresExtendedTests {
     @Test
     @DisplayName("Полное обновление пользователя (PUT)")
     void updateUserTest() {
-        UserRequest user = UserRequest.builder().name("morpheus").job("zion resident").build();
+        UserRequest user = UserRequest.builder()
+                .name("morpheus")
+                .job("zion resident")
+                .build();
 
         UserResponse response = step("Обновление пользователя ID 2", () ->
-                given().spec(Specifications.requestSpec)
+                given().spec(Specifications.requestSpec())
                         .body(user)
-                        .filter(withCustomTemplates())
-                        .when().put("/users/2")
-                        .then().spec(Specifications.responseSpec(200))
-                        .extract().as(UserResponse.class)
+                .when()
+                        .put("/users/2")
+                .then()
+                        .spec(Specifications.responseSpec(200))
+                        .extract()
+                        .as(UserResponse.class)
         );
 
         step("Сверка обновленной профессии", () -> {
@@ -79,10 +94,12 @@ public class ReqresExtendedTests {
     @DisplayName("Удаление пользователя")
     void deleteUserTest() {
         step("Удаление пользователя с ID 2", () -> {
-            given().spec(Specifications.requestSpec)
-                    .filter(withCustomTemplates())
-                    .when().delete("/users/2")
-                    .then().spec(Specifications.responseSpec(204));
+            given()
+                    .spec(Specifications.requestSpec())
+            .when()
+                    .delete("/users/2")
+            .then()
+                    .spec(Specifications.responseSpec(204));
         });
     }
 }
