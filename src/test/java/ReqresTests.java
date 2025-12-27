@@ -11,9 +11,10 @@ public class ReqresTests extends BaseTest {
     public void getListUsersTest() {
         given()
                 .log().uri()
-                .when()
-                .get("/users?page=2")
-                .then()
+                .queryParam("page", "2")
+        .when()
+                .get("/users")
+        .then()
                 .log().status()
                 .statusCode(200)
                 .body("page", equalTo(2))
@@ -25,9 +26,9 @@ public class ReqresTests extends BaseTest {
     public void getSingleUserTest() {
         given()
                 .log().uri()
-                .when()
+        .when()
                 .get("/users/2")
-                .then()
+        .then()
                 .log().status()
                 .statusCode(200)
                 .body("data.id", equalTo(2))
@@ -42,9 +43,9 @@ public class ReqresTests extends BaseTest {
         given()
                 .log().uri()
                 .body(body)
-                .when()
+        .when()
                 .post("/users")
-                .then()
+        .then()
                 .log().status()
                 .statusCode(201)
                 .body("name", equalTo("ivan"))
@@ -59,9 +60,9 @@ public class ReqresTests extends BaseTest {
         given()
                 .log().uri()
                 .body(body)
-                .when()
+        .when()
                 .put("/users/2")
-                .then()
+        .then()
                 .log().status()
                 .statusCode(200)
                 .body("job", equalTo("senior qa"));
@@ -72,9 +73,9 @@ public class ReqresTests extends BaseTest {
     public void deleteUserTest() {
         given()
                 .log().uri() // Логируем только URI запроса
-                .when()
+        .when()
                 .delete("/users/2")
-                .then()
+        .then()
                 .log().status()
                 .statusCode(204);
     }
