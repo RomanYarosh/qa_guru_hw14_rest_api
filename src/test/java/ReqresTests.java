@@ -1,5 +1,3 @@
-package tests;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,9 +11,8 @@ public class ReqresTests extends BaseTest {
     public void getListUsersTest() {
         given()
                 .log().uri()
-                .queryParam("page", "2")
                 .when()
-                .get("/users")
+                .get("/users?page=2")
                 .then()
                 .log().status()
                 .statusCode(200)
